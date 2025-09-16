@@ -1118,21 +1118,7 @@ if CONFIG["OutputMode"] == "EDM4Hep":
     from Configurables import PodioOutput
     out = PodioOutput("PodioOutput", filename = f"{reco_args.outputBasename}_edm4hep.root")
     out.outputCommands = [
-        "drop *",
-        "keep *MCParticles*",
-        "keep *Pandora*",
-        "keep *SiTracks*",
-        "keep *MCTruthLink*",
-        "keep *Clusters*",
-        "keep *RecoParticles*",
-        "keep *MUON*",
-        "keep *ECALBarrel*",
-        "keep *ECALEndcap*",
-        "keep *HCALBarrel*",
-        "keep *HCALEndcap*",
-        "keep *HCALOther*",
-        "keep *TrackerHit*",
-        "keep *Vertices*",
+        "keep *",
     ]
     algList.append(out)
 
