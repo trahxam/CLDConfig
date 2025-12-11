@@ -25,7 +25,7 @@ Beams:sigmaTime = 1.94    !  6.46 ps
 
 ! 3) Hard process : WW at 365 GeV 
 Beams:eCM = 365  ! CM energy of collision
-WeakDoubleBoson:ffbar2gmZgmZ = on
+WeakDoubleBoson:ffbar2gmZgmZ = off
 WeakDoubleBoson:ffbar2WW = on
 WeakDoubleBoson:ffbar2ZW = off
 
