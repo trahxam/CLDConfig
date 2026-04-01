@@ -1083,14 +1083,6 @@ if not reco_args.trackingOnly:
 # event number processor, down here to attach the conversion back to edm4hep to it
 algList.append(EventNumber)
 
-# per-event per-algorithm timing (optional)
-if reco_args.enableTimings:
-    from Configurables import EventTimingWriter
-    timingWriter = EventTimingWriter("EventTimingWriter")
-    timingWriter.OutputLevel = INFO  # print index mapping (only at first event + finalize)
-    timingWriter.OutputFile = f"{reco_args.outputBasename}_timing.root"
-    algList.append(timingWriter)
-
 if CONFIG["OutputMode"] == "LCIO":
     Output_REC = MarlinProcessorWrapper("Output_REC")
     Output_REC.OutputLevel = WARNING
@@ -1138,6 +1130,16 @@ if CONFIG["OutputMode"] == "EDM4Hep":
 
 # We need to convert the inputs in case we have EDM4hep input
 attach_edm4hep2lcio_conversion(algList, read)
+
+# per-event per-algorithm timing (optional)
+# Appended after output so that finalize() runs after PodioOutput has closed its file
+if reco_args.enableTimings:
+    from Configurables import EventTimingWriter
+    timingWriter = EventTimingWriter("EventTimingWriter")
+    timingWriter.OutputLevel = INFO  # print index mapping (only at first event + finalize)
+    timingWriter.OutputFile = f"{reco_args.outputBasename}_timing_tmp.root"
+    timingWriter.MergeInto = f"{reco_args.outputBasename}_edm4hep.root"
+    algList.append(timingWriter)
 
 # timing auditor setup (must come before ApplicationMgr)
 if reco_args.enableTimings:
