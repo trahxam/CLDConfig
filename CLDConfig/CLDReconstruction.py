@@ -1086,7 +1086,10 @@ algList.append(EventNumber)
 # per-event per-algorithm timing (optional)
 if reco_args.enableTimings:
     from Configurables import EventTimingWriter
-    algList.append(EventTimingWriter("EventTimingWriter"))
+    timingWriter = EventTimingWriter("EventTimingWriter")
+    timingWriter.OutputLevel = INFO  # print index mapping (only at first event + finalize)
+    timingWriter.OutputFile = f"{reco_args.outputBasename}_timing.root"
+    algList.append(timingWriter)
 
 if CONFIG["OutputMode"] == "LCIO":
     Output_REC = MarlinProcessorWrapper("Output_REC")
