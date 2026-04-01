@@ -27,6 +27,7 @@ from k4FWCore.parseArgs import parser
 parser.add_argument("--inputFiles", action="extend", nargs="+", metavar=("file1", "file2"), help="One or multiple input files")
 parser.add_argument("--outputBasename", help="Basename of the output file(s)", default="output")
 parser.add_argument("--trackingOnly", action="store_true", help="Run only track reconstruction", default=False)
+parser.add_argument("--enableTimings", action="store_true", help="Write per-event per-algorithm wall-clock timing into the output file (EventTimings collection)", default=False)
 reco_args = parser.parse_known_args()[0]
 
 algList = []
@@ -1130,10 +1131,28 @@ if CONFIG["OutputMode"] == "EDM4Hep":
 # We need to convert the inputs in case we have EDM4hep input
 attach_edm4hep2lcio_conversion(algList, read)
 
+# per-event per-algorithm timing (optional)
+# Appended after output so that finalize() runs after PodioOutput has closed its file
+if reco_args.enableTimings:
+    from Configurables import EventTimingWriter
+    timingWriter = EventTimingWriter("EventTimingWriter")
+    timingWriter.OutputLevel = INFO  # print index mapping (only at first event + finalize)
+    timingWriter.OutputFile = f"{reco_args.outputBasename}_timing_tmp.root"
+    timingWriter.MergeInto = f"{reco_args.outputBasename}_edm4hep.root"
+    algList.append(timingWriter)
+
+# timing auditor setup (must come before ApplicationMgr)
+if reco_args.enableTimings:
+    from Configurables import AuditorSvc, EventTimingAuditor
+    auditorSvc = AuditorSvc()
+    auditorSvc.Auditors = ["EventTimingAuditor"]
+    svcList.append(auditorSvc)
+
 from Configurables import ApplicationMgr
 ApplicationMgr( TopAlg = algList,
                 EvtSel = 'NONE',
                 EvtMax = 3, # Overridden by the --num-events switch to k4run
                 ExtSvc = svcList,
-                OutputLevel=WARNING
+                OutputLevel=WARNING,
+                AuditAlgorithms=reco_args.enableTimings
               )
