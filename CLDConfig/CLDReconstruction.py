@@ -27,6 +27,7 @@ from k4FWCore.parseArgs import parser
 parser.add_argument("--inputFiles", action="extend", nargs="+", metavar=("file1", "file2"), help="One or multiple input files")
 parser.add_argument("--outputBasename", help="Basename of the output file(s)", default="output")
 parser.add_argument("--trackingOnly", action="store_true", help="Run only track reconstruction", default=False)
+parser.add_argument("--enableTimings", action="store_true", help="Write per-event per-algorithm wall-clock timing into the output file (EventTimings collection)", default=False)
 reco_args = parser.parse_known_args()[0]
 
 algList = []
@@ -1082,6 +1083,11 @@ if not reco_args.trackingOnly:
 # event number processor, down here to attach the conversion back to edm4hep to it
 algList.append(EventNumber)
 
+# per-event per-algorithm timing (optional)
+if reco_args.enableTimings:
+    from Configurables import EventTimingWriter
+    algList.append(EventTimingWriter("EventTimingWriter"))
+
 if CONFIG["OutputMode"] == "LCIO":
     Output_REC = MarlinProcessorWrapper("Output_REC")
     Output_REC.OutputLevel = WARNING
@@ -1130,10 +1136,18 @@ if CONFIG["OutputMode"] == "EDM4Hep":
 # We need to convert the inputs in case we have EDM4hep input
 attach_edm4hep2lcio_conversion(algList, read)
 
+# timing auditor setup (must come before ApplicationMgr)
+if reco_args.enableTimings:
+    from Configurables import AuditorSvc, EventTimingAuditor
+    auditorSvc = AuditorSvc()
+    auditorSvc.Auditors = ["EventTimingAuditor"]
+    svcList.append(auditorSvc)
+
 from Configurables import ApplicationMgr
 ApplicationMgr( TopAlg = algList,
                 EvtSel = 'NONE',
                 EvtMax = 3, # Overridden by the --num-events switch to k4run
                 ExtSvc = svcList,
-                OutputLevel=WARNING
+                OutputLevel=WARNING,
+                AuditAlgorithms=reco_args.enableTimings
               )
