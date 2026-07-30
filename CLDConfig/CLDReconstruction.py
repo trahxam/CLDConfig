@@ -51,7 +51,7 @@ CONFIG = {
 
 from Configurables import GeoSvc, TrackingCellIDEncodingSvc
 geoservice = GeoSvc("GeoSvc")
-geoservice.detectors = [os.environ["K4GEO"]+"/FCCee/CLD/compact/CLD_o2_v05/CLD_o2_v05.xml"]
+geoservice.detectors = [os.environ["K4GEO"]+"/FCCee/CLD/compact/CLD_o2_v07/CLD_o2_v07.xml"]
 geoservice.OutputLevel = INFO
 geoservice.EnableGeant4Geo = False
 svcList.append(geoservice)
@@ -278,11 +278,6 @@ MyConformalTracking.Parameters = {
                                       "@Collections", ":", "ITrackerHits,", "OTrackerHits,", "ITrackerEndcapHits,", "OTrackerEndcapHits",
                                       "@Parameters", ":", "MaxCellAngle", ":", "0.1;", "MaxCellAngleRZ", ":", "0.1;", "Chi2Cut", ":", "2000;", "MinClustersOnTrack", ":", "4;", "MaxDistance", ":", CT_MAX_DIST, "SlopeZRange:", "10.0;", "HighPTCut:", "1.0;",
                                       "@Flags", ":", "HighPTFit,", "VertexToTracker,", "RadialSearch",
-                                      "@Functions", ":", "CombineCollections,", "ExtendTracks",
-                                      "[InnerVXDExtend]",
-                                      "@Collections", ":", "VXDTrackerHits",
-                                      "@Parameters", ":", "MaxCellAngle", ":", "0.1;", "MaxCellAngleRZ", ":", "0.1;", "Chi2Cut", ":", "200;", "MinClustersOnTrack", ":", "4;", "MaxDistance", ":", "0.15;", "SlopeZRange:", "10.0;", "HighPTCut:", "0.0;",
-                                      "@Flags", ":", "RadialSearch",
                                       "@Functions", ":", "CombineCollections,", "ExtendTracks",
                                       "[Displaced]",
                                       "@Collections", ":", "VXDTrackerHits,", "VXDEndcapTrackerHits,", "ITrackerHits,", "OTrackerHits,", "ITrackerEndcapHits,", "OTrackerEndcapHits",

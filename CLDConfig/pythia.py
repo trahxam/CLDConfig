@@ -22,10 +22,10 @@ ApplicationMgr().ExtSvc += [podioevent]
 
 from Configurables import GaussSmearVertex
 smeartool = GaussSmearVertex()
-smeartool.xVertexSigma =   0.5*units.mm
-smeartool.yVertexSigma =   0.5*units.mm
-smeartool.zVertexSigma =  40.0*units.mm
-smeartool.tVertexSigma = 180.0*units.picosecond
+smeartool.xVertexSigma = 0 * units.mm
+smeartool.yVertexSigma = 0 * units.mm
+smeartool.zVertexSigma = 0 * units.mm
+smeartool.tVertexSigma = 0 * units.picosecond
 
 from Configurables import PythiaInterface
 pythia8gentool = PythiaInterface()

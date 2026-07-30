@@ -23,7 +23,7 @@ from g4units import mm, GeV, MeV, m, deg
 SIM = DD4hepSimulation()
 
 ## The compact XML file
-SIM.compactFile = ""
+SIM.compactFile = os.environ["K4GEO"]+"/FCCee/CLD/compact/CLD_o2_v07/CLD_o2_v07.xml"
 ## Lorentz boost for the crossing angle, in radian!
 SIM.crossingAngleBoost = 0.015
 SIM.enableDetailedShowerMode = True
@@ -198,6 +198,8 @@ SIM.output.random = 6
 ################################################################################
 ## Configuration for the Particle Handler/ MCTruth treatment
 ################################################################################
+
+SIM.part.userParticleHandler = "Geant4TVUserParticleHandler"
 
 ##  Keep all created particles
 SIM.part.keepAllParticles = False
